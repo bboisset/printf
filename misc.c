@@ -27,9 +27,9 @@ int    ft_strlen(const char *s)
     return (i);
 }
 
-int    ft_number_length(int nb)
+unsigned long long   ft_number_length(unsigned long long nb)
 {
-    int        length;
+    unsigned long long  length;
     
     length = 0;
     if (nb == 0)
@@ -124,20 +124,12 @@ char    *ft_substr(char const *s, size_t start, size_t len)
     return (str2);
 }
 
-static int    ft_isspace(int c)
-{
-    return (c == ' ' || c == '\t' || c == '\n' || c == '\f' || c == '\r' ||
-            c == '\v') ? 1 : 0;
-}
-
 int             ft_edit_atoi(const char *str)
 {
     int i;
-    int negative;
     int number;
     
     i = 0;
-    negative = 0;
     number = 0;
     if (str[0] == '\0')
         return (0);
@@ -174,12 +166,23 @@ char        *ft_strdup(const char *s1)
     return (dest);
 }
 
+char        *ft_char_to_string(char c)
+{
+    char *dest;
+    
+    if (!(dest = malloc(sizeof(char) * 2)))
+        return (NULL);
+    dest[0] = c;
+    dest[1] = '\0';
+    return (dest);
+}
+
 char        *ft_itoa(int n)
 {
     char    *str;
     int        i;
     
-    i = ft_number_length(n);
+    i = (int)ft_number_length(n);
     if (!(str = malloc((i + 1) * sizeof(char))))
         return (NULL);
     str[i--] = '\0';
@@ -202,4 +205,42 @@ char        *ft_itoa(int n)
     }
     str[i] = '\0';
     return (str);
+}
+
+char *reverse_string(char **src)
+{
+    char *tmp;
+    int str_len;
+    int i;
+    
+    str_len = ft_strlen(*src);
+    i = 0;
+    if (!(tmp = malloc(sizeof(char) * str_len)))
+        return (NULL);
+    while (src[str_len] > 0)
+        tmp[i++] = *src[str_len--];
+    free(src);
+    *src = tmp;
+    return (*src);
+}
+char *num_to_hex(unsigned long long num)
+{
+    char *res;
+    unsigned long long i = 0;
+    unsigned long long temp;
+    
+    if (!(res = malloc(sizeof(char) * ft_number_length(num))))
+        return (NULL);
+    while (num != 0)
+    {
+        temp = 0;
+        temp = num % 16;
+        if (temp < 10)
+            res[i++] = temp + 48;
+        else
+            res[i++] = temp + 55;
+        num /= 16;
+    }
+    //reverse str
+    return (res);
 }

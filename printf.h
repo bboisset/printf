@@ -38,11 +38,13 @@ void    ft_lstadd_back(t_list **alst, t_list *new);
 char    *ft_substr(char const *s, size_t start, size_t len);
 int     ft_isdigit(int c);
 int     ft_edit_atoi(const char *str);
-int     ft_number_length(int nb);
+unsigned long long   ft_number_length(unsigned long long nb);
 int     ft_strlen(const char *s);
 char    *ft_itoa(int n);
-char        *ft_strdup(const char *s1)
+char        *ft_strdup(const char *s1);
+char *num_to_hex(unsigned long long num);
 t_flags_state *init_to_do(void);
+char        *ft_char_to_string(char c);
 
 /* main.c */
 int     is_end_of_arg(char c);

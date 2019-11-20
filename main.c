@@ -16,22 +16,28 @@ int is_end_of_arg(char c)
 char *get_arguments(char type, va_list args)
 {
     char *res;
+    unsigned long long test;
     
     if (type == 'c')
-        res = ft_strdup(va_arg(args, uintmax_t));
+        res = ft_char_to_string(va_arg(args, uintmax_t));
     else if (type == 's')
         res = va_arg(args, char*);
     else if (type == 'p' || type == 'x' || type == 'X')
-        res = va_arg(args, unsigned long long int);
+    {
+        test = va_arg(args, unsigned long long);
+        res = num_to_hex(test);
+    }
+    return NULL;
 }
 
 char *convert_string(char **str, va_list args, int *args_idx, t_flags_state **to_do)
 {
-    char *new_str;
+    char *new_str = NULL;
     char *current_arg;
     t_flags_state *temp;
     
     temp = *to_do;
+    current_arg = get_arguments(temp->type, args);
     if (temp->zero_left)
         new_str = NULL;
     else if (temp->space_left)
@@ -55,6 +61,11 @@ void print_list(t_list *list)
     }
 }
 
+void assign_type(char c, t_flags_state *to_do)
+{
+    to_do->type = c;
+}
+
 /* Should Return something like %-10x | %#-10x | %d | %#-10-50x...
  */
 int is_valid_pattern(char *str, t_flags_state **to_do)
@@ -62,7 +73,7 @@ int is_valid_pattern(char *str, t_flags_state **to_do)
     int i;
     
     i = 1;
-    *to_do = init_to_do();//check multiple to do
+    *to_do = init_to_do();
     while (str[i] != '\0')
     {
         if (str[i] == 0)
@@ -73,9 +84,9 @@ int is_valid_pattern(char *str, t_flags_state **to_do)
             i = minus_pattern(str, i, *to_do);
         else if (str[i] == '.')
             i = dot_star_pattern(str, i, *to_do);
-        //else if (*str[i] == '#')
         i++;
     }
+    assign_type(str[i - 1], *to_do);
     free(str);//can't access to free
     return (0);
 }
@@ -99,7 +110,7 @@ int parse_string(const char *str, t_list **list, va_list args, int *args_idx)
                 j++;
             if (is_valid_pattern((char*)ft_substr(str, i, j + 1), &to_do) == 0)//possible impossible to free
             {
-                ft_lstadd_back(list, ft_lstnew(convert_string((char**)ft_substr(str, i + 1, j), args, args_idx, &to_do)));
+                ft_lstadd_back(list, ft_lstnew(convert_string((char**)ft_substr(str, i, j + 1), args, args_idx, &to_do)));
                 i += j;
                 last_addition = i;
             }
@@ -127,7 +138,9 @@ int ft_printf(const char *format, ...)
 }
 
 int main(void) {
-    ft_printf("%10d\n", 12);
+    char *x = "string";
+    printf("%p",x);
+    ft_printf("%p\n", x);
     /*printf("je test, %#-10x", 12345);
     printf("je suis une phrase de %-20s, voici un exemple %-10d\n", "test",42);
     //ft_printf("Hello, dddd!\n");
