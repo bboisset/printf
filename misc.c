@@ -223,6 +223,24 @@ char *reverse_string(char **src)
     *src = tmp;
     return (*src);
 }
+
+char    *ft_strrev(char *src)
+{
+    int        length;
+    int        i;
+    char    temp;
+    
+    length = ft_strlen(src);
+    i = -1;
+    while (++i < length / 2)
+    {
+        temp = src[i];
+        src[i] = src[length - i - 1];
+        src[length - i - 1] = temp;
+    }
+    return (src);
+}
+
 char *num_to_hex(unsigned long long num)
 {
     char *res;
@@ -241,6 +259,7 @@ char *num_to_hex(unsigned long long num)
             res[i++] = temp + 55;
         num /= 16;
     }
-    //reverse str
+    ft_strrev(res);
+    printf("%s", res);
     return (res);
 }

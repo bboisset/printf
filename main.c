@@ -139,7 +139,7 @@ int ft_printf(const char *format, ...)
 
 int main(void) {
     char *x = "string";
-    printf("%p",x);
+    printf("%p\n",x);
     ft_printf("%p\n", x);
     /*printf("je test, %#-10x", 12345);
     printf("je suis une phrase de %-20s, voici un exemple %-10d\n", "test",42);
