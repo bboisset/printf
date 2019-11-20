@@ -8,53 +8,40 @@
 
 #include "printf.h"
 
-/*char *treat_arg(char *str, void *arg)
-{
-    free(str);
-}*/
-
 int is_end_of_arg(char c)
 {
     return ((c == 'c' || c == 's' || c == 'p' || c == 'd' || c == 'i' || c == 'u' || c == 'x' || c == 'X' || c == '%') ? 1 : 0);
 }
 
-int get_type_by_letter(char c)
+char *get_arguments(char type, va_list args)
 {
-    if (c == 's' || c == 'p' || c == 'x' || c == 'X')
-        return (1);
-    else if (c == 'c' || c == 'i' || c == '%')
-        return (2);
-    else if (c == 'd' || c == 'u')
-        return (3);
-    return (0);
-}
-
-int is_valid_pattern(char **str)//oublie du cumul des pattern
-{
-    int status;
+    char *res;
     
-    status = -1;
-    if (*str[0] == '0')
-        status = zero_pattern(*str);
-    else if (*str[0] == '-')
-        status = minus_pattern(*str);
-    else if (*str[0] == '.')
-        status = dot_star_pattern(*str);
-    free(*str);
-    return (status);
+    if (type == 'c')
+        res = ft_strdup(va_arg(args, uintmax_t));
+    else if (type == 's')
+        res = va_arg(args, char*);
+    else if (type == 'p' || type == 'x' || type == 'X')
+        res = va_arg(args, unsigned long long int);
 }
 
-char *convert_string(char **str, va_list args, int *args_idx)
+char *convert_string(char **str, va_list args, int *args_idx, t_flags_state **to_do)
 {
     char *new_str;
+    char *current_arg;
+    t_flags_state *temp;
     
-    new_str = NULL;
-    if (*str[0] == '0')
-        new_str = zero_format(*str, args);
-    else if (*str[0] == '-')
-        new_str = minus_format(*str, args);
-    else if (*str[0] == '.')
-        new_str = dot_star_format(*str, args);
+    temp = *to_do;
+    if (temp->zero_left)
+        new_str = NULL;
+    else if (temp->space_left)
+        new_str = NULL;
+    else if (temp->space_right)
+        new_str = NULL;
+    else if (temp->first_digit_to_zero)
+        new_str = NULL;
+    else if (temp->dot_star)
+        new_str = NULL;
     free(*str);
     return (new_str);
 }
@@ -68,11 +55,37 @@ void print_list(t_list *list)
     }
 }
 
+/* Should Return something like %-10x | %#-10x | %d | %#-10-50x...
+ */
+int is_valid_pattern(char *str, t_flags_state **to_do)
+{
+    int i;
+    
+    i = 1;
+    *to_do = init_to_do();//check multiple to do
+    while (str[i] != '\0')
+    {
+        if (str[i] == 0)
+            i = zero_pattern(str, i, *to_do);
+        else if (ft_isdigit(str[i]))
+            i = digit_pattern(str, i, *to_do);
+        else if (str[i] == '-')
+            i = minus_pattern(str, i, *to_do);
+        else if (str[i] == '.')
+            i = dot_star_pattern(str, i, *to_do);
+        //else if (*str[i] == '#')
+        i++;
+    }
+    free(str);//can't access to free
+    return (0);
+}
+
 int parse_string(const char *str, t_list **list, va_list args, int *args_idx)
 {
     int i;
     int j;
     int last_addition;
+    t_flags_state *to_do;
     
     i = 0;
     j = 0;
@@ -82,9 +95,11 @@ int parse_string(const char *str, t_list **list, va_list args, int *args_idx)
         if (str[i] == '%')
         {
             ft_lstadd_back(list, ft_lstnew(ft_substr(str, last_addition, i - last_addition)));
-            if (is_valid_pattern((char**)ft_substr(str, i + 1, j)) == 0)// j should be pattern expected length, i+1 is for removing the %
+            while (!is_end_of_arg(str[i + j]) || (str[i + j] == '%' && !(str[i + j - 1] == '%')))
+                j++;
+            if (is_valid_pattern((char*)ft_substr(str, i, j + 1), &to_do) == 0)//possible impossible to free
             {
-                ft_lstadd_back(list, ft_lstnew(convert_string((char**)ft_substr(str, i + 1, j), args, args_idx)));
+                ft_lstadd_back(list, ft_lstnew(convert_string((char**)ft_substr(str, i + 1, j), args, args_idx, &to_do)));
                 i += j;
                 last_addition = i;
             }
@@ -112,7 +127,8 @@ int ft_printf(const char *format, ...)
 }
 
 int main(void) {
-    //ft_printf("je suis un test\n", "string", 12);
+    ft_printf("%10d\n", 12);
+    /*printf("je test, %#-10x", 12345);
     printf("je suis une phrase de %-20s, voici un exemple %-10d\n", "test",42);
     //ft_printf("Hello, dddd!\n");
     printf("%%\n");
@@ -156,6 +172,6 @@ int main(void) {
     printf( "%.*f\n", 5, 3.14159265 );//arronndie un float à la valeur fournir en arg1
     printf( "%.*d\n", 5, 42);//meme comportement que le 0
     printf( "%.*s\n", 3, "string");//raccourcie le string à la taille fournir en arg1
-    printf( "%.*x\n", 3, 1909393);//aucun effet sur x,X
+    printf( "%.*x\n", 3, 1909393);//aucun effet sur x,X*/
     return 0;
 }

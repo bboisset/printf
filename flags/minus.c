@@ -8,15 +8,14 @@
 
 #include "printf.h"
 
-int minus_pattern(char *str)
+int minus_pattern(char *str, int pos, t_flags_state *to_do)
 {
     int i;
     
-    i = 1;
-    while (ft_isdigit(str[i]))
+    i = pos + 1;
+    to_do->space_right = ft_edit_atoi(str);
+    while(ft_isdigit(str[i]))
         i++;
-    if (is_end_of_arg(str[i]))
-        return (0);
     return (i);
 }
 

@@ -9,18 +9,13 @@
 #include "printf.h"
 #include <stdarg.h>
 
-int zero_pattern(char *str, int pos, t_flags_state *to_do)
+int digit_pattern(char *str, int pos, t_flags_state *to_do)
 {
     int i;
     
-    i = pos + 1;
-    to_do->zero_left = ft_edit_atoi(str);
+    i = pos;
+    to_do->space_left = ft_edit_atoi(str);
     while(ft_isdigit(str[i]))
         i++;
     return (i);
-}
-
-char    *zero_format(char *str, va_list args)
-{
-    return NULL;
 }

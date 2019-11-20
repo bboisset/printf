@@ -53,6 +53,22 @@ int    ft_isdigit(int c)
     return (c >= 48 && c <= 57) ? 1 : 0;
 }
 
+t_flags_state *init_to_do(void)
+{
+    t_flags_state *new;
+    
+    if (!(new = (t_flags_state*)malloc(sizeof(t_flags_state))))
+        return (NULL);
+    new->zero_left = 0;
+    new->space_left = 0;
+    new->space_right = 0;
+    new->zero_left = 0;
+    new->first_digit_to_zero = 0;
+    new->dot_star = 0;
+    new->type = '0';
+    return (new);
+}
+
 t_list  *ft_lstnew(void *content)
 {
     t_list *new;
@@ -64,8 +80,10 @@ t_list  *ft_lstnew(void *content)
     else
         new->content = content;
     new->next = NULL;
+    new->to_do = NULL;
     return (new);
 }
+
 void    ft_lstadd_back(t_list **alst, t_list *new)
 {
     t_list *temp;
@@ -82,18 +100,6 @@ void    ft_lstadd_back(t_list **alst, t_list *new)
         else
             *alst = new;
     }
-}
-
-int        ft_strlen(const char *s)
-{
-    int    i;
-    
-    i = 0;
-    if (!s)
-        return (0);
-    while (s[i] != '\0')
-        i++;
-    return (i);
 }
 
 char    *ft_substr(char const *s, size_t start, size_t len)
