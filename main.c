@@ -71,7 +71,7 @@ char *convert_string(va_list args, t_flags_state **to_do)
         new_str = add_char(temp->space_right, current_arg, 1, ' ');
     else if (temp->first_digit_to_zero)
         new_str = NULL;
-    else if (temp->dot_star)
+    else if (temp->dot_star != -2)
         new_str = dot_format(temp->dot_star, current_arg, temp->type, args);
     else
         new_str = ft_strdup(current_arg);
@@ -149,7 +149,8 @@ int parse_string(const char *str, t_list **list, va_list args)
             j = 0;
             free(pattern);
         }
-        i++;
+		else
+        	i++;
     }
     ft_lstadd_back(list, ft_lstnew(ft_substr(str, last_addition, i - last_addition)));
     return (1);

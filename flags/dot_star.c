@@ -15,7 +15,7 @@ int     dot_pattern(char *str, int pos, t_flags_state *to_do)
     i = pos + 1;
     to_do->dot_star = ft_edit_atoi(str);
     if (to_do->dot_star == -1 && str[i] != '*')
-        to_do->dot_star = 0;
+        to_do->dot_star = -2;
     while(ft_isdigit(str[i]) && str[i] != '\0')
         i++;
     return (i);

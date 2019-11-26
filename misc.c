@@ -19,7 +19,7 @@ t_flags_state *init_to_do(void)
     new->space_right = 0;
     new->zero_left = 0;
     new->first_digit_to_zero = 0;
-    new->dot_star = 0;
+    new->dot_star = -2;
     new->percentage = 0;
     new->type = '0';
     return (new);
