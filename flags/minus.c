@@ -19,8 +19,3 @@ int minus_pattern(char *str, int pos, t_flags_state *to_do)
         i++;
     return (i);
 }
-
-char    *zero_format(char *str, va_list args)
-{
-    return NULL;
-}

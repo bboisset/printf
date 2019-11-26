@@ -53,7 +53,7 @@ char *get_arguments(char type, va_list args, int dot_star)
     return (res);
 }
 
-char *convert_string(va_list args, int *args_idx, t_flags_state **to_do)
+char *convert_string(va_list args, t_flags_state **to_do)
 {
     char *new_str;
     char *current_arg;
@@ -121,7 +121,7 @@ int is_valid_pattern(char *str, t_flags_state **to_do)
     return (assign_type(str[i - 1], *to_do));
 }
 
-int parse_string(const char *str, t_list **list, va_list args, int *args_idx)
+int parse_string(const char *str, t_list **list, va_list args)
 {
     int i;
     int j;
@@ -141,7 +141,7 @@ int parse_string(const char *str, t_list **list, va_list args, int *args_idx)
                 j++;
             if (is_valid_pattern(pattern = ft_substr(str, i, j + 1), &to_do) == 0)
             {
-                ft_lstadd_back(list, ft_lstnew(convert_string(args, args_idx, &to_do)));
+                ft_lstadd_back(list, ft_lstnew(convert_string(args, &to_do)));
                 j += 1;
             }
             i += j;
@@ -159,20 +159,12 @@ int ft_printf(const char *format, ...)
 {
     t_list  *list;
     va_list args;
-    int     args_idx;
     
     va_start(args, format);
     list = NULL;
-    args_idx = 0;
-    parse_string(format, &list, args, &args_idx);
+    parse_string(format, &list, args);
     va_end(args);
     print_list(list);
     //free list
     return (0);
-}
-
-int main(void) {
-    printf( "%i\n", 123);
-    ft_printf( "%i\n", 123);
-    return 0;
 }

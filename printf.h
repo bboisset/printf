@@ -7,13 +7,13 @@
 //
 
 #ifndef misc_h
-#define misc_h
+# define misc_h
 
-#include <stdio.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <stdarg.h>
-#include "libft.h"
+# include <stdio.h>
+# include <unistd.h>
+# include <stdlib.h>
+# include <stdarg.h>
+# include "libft.h"
 
 typedef struct      s_flags_state
 {
@@ -34,21 +34,21 @@ char                *num_to_hex(uint64_t num);
 /* main.c */
 int                 is_end_of_arg(char c);
 int                 get_type_by_letter(char c);
+int					ft_printf(const char *format, ...);
 char                *get_arguments(char type, va_list args, int dot_star);
 
 /* flags/zero.c */
 int                 zero_pattern(char *str, int pos, t_flags_state *to_do);
-char                *zero_format(char *str, va_list args);
 
 /* flags/minus.c */
 int                 minus_pattern(char *str, int pos, t_flags_state *to_do);
-char                *minus_format(char *str, va_list args);
+//char                *minus_format(char *str, va_list args);
 
 /* flags/dot-star.c */
 int                 dot_pattern(char *str, int pos, t_flags_state *to_do);
 char                *dot_format(int count, char *str, char type, va_list args);
 
-/* flags/zero.c */
+/* flags/digit.c */
 int                 digit_pattern(char *str, int pos, t_flags_state *to_do);
 char                *add_char(int space_to_add, char *str, int orientation, char charset);
 

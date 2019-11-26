@@ -1,10 +1,14 @@
-//
-//  zero.c
-//  PrintF
-//
-//  Created by Boisset on 15/11/2019.
-//  Copyright © 2019 Boisset. All rights reserved.
-//
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   zero.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: bboisset <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/11/26 14:59:59 by bboisset          #+#    #+#             */
+/*   Updated: 2019/11/26 15:00:03 by bboisset         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "printf.h"
 #include <stdarg.h>
@@ -18,9 +22,4 @@ int zero_pattern(char *str, int pos, t_flags_state *to_do)
     while(ft_isdigit(str[i]) && str[i] != '\0')
         i++;
     return (i);
-}
-
-char *minus_format(char *str, va_list args)
-{
-    return NULL;
 }
