@@ -8,20 +8,38 @@
 
 #include "printf.h"
 
-int dot_star_pattern(char *str, int pos, t_flags_state *to_do)
+int     dot_pattern(char *str, int pos, t_flags_state *to_do)
 {
     int i;
     
     i = pos + 1;
-    if (str[i] == '*')
-    {
-        to_do->dot_star = 1;
-        return (pos);
-    }
-    return (pos - 1);
+    to_do->dot_star = ft_edit_atoi(str);
+    if (to_do->dot_star == -1 && str[i] != '*')
+        to_do->dot_star = 0;
+    while(ft_isdigit(str[i]) && str[i] != '\0')
+        i++;
+    return (i);
 }
 
-char *dot_star_format(char *str, va_list args)
+char    *dot_format(int count, char *str, char type, va_list args)
 {
-    return NULL;
+    int i;
+    int str_len;
+    
+    i = 0;
+    str_len = ft_strlen(str);
+    if (count == -1)
+    {
+        count = ft_atoi(str);
+        str = get_arguments(type, args, 0);
+        str_len = ft_strlen(str);
+        if (count < str_len)
+            return (ft_substr(str, 0, count));
+        return (add_char(count, str, 0, '0'));
+    }
+    else if (type == 's' && count >= str_len)
+        return (ft_strdup(str));
+    else if (count < str_len)
+       return (ft_substr(str, 0, count));
+    return (add_char(count, str, 0, '0'));
 }

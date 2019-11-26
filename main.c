@@ -13,42 +13,69 @@ int is_end_of_arg(char c)
     return ((c == 'c' || c == 's' || c == 'p' || c == 'd' || c == 'i' || c == 'u' || c == 'x' || c == 'X' || c == '%') ? 1 : 0);
 }
 
-char *get_arguments(char type, va_list args)
+char *get_arguments_pointer(char type, va_list args)
 {
     char *res;
-    unsigned long long test;
+    uintmax_t temp;
     
-    if (type == 'c')
+    if (type == 'p')
+        temp = va_arg(args, uintmax_t);
+    else
+        temp = va_arg(args, unsigned int);
+    res = num_to_hex(temp);
+    if (type == 'X')
+        return (res);
+    res = ft_strlowcase(res);
+    if (type == 'x')
+        return (res);
+    else if (type == 'p')
+        return (ft_strjoin("0x", res));
+    return (NULL);
+}
+
+char *get_arguments(char type, va_list args, int dot_star)
+{
+    char *res;
+    
+    res = NULL;
+    if (type == 'u' || dot_star == -1)
+        res = ft_itoa(va_arg(args, unsigned int));
+    else if (type == 'c')
         res = ft_char_to_string(va_arg(args, uintmax_t));
     else if (type == 's')
         res = va_arg(args, char*);
     else if (type == 'p' || type == 'x' || type == 'X')
-    {
-        test = va_arg(args, unsigned long long);
-        res = num_to_hex(test);
-    }
-    return NULL;
+        res = get_arguments_pointer(type, args);
+    else if (type == 'i' || type == 'd')
+        res = ft_itoa((va_arg(args, int)));
+    else if (type == '%')
+        res = ft_char_to_string('%');
+    return (res);
 }
 
-char *convert_string(char **str, va_list args, int *args_idx, t_flags_state **to_do)
+char *convert_string(va_list args, int *args_idx, t_flags_state **to_do)
 {
-    char *new_str = NULL;
+    char *new_str;
     char *current_arg;
     t_flags_state *temp;
     
     temp = *to_do;
-    current_arg = get_arguments(temp->type, args);
+    new_str = NULL;
+    if (!(current_arg = get_arguments(temp->type, args, temp->dot_star)))
+        return (NULL);
     if (temp->zero_left)
-        new_str = NULL;
+        new_str = add_char(temp->zero_left, current_arg, 0, '0');
     else if (temp->space_left)
-        new_str = NULL;
+        new_str = add_char(temp->space_left, current_arg, 0, ' ');
     else if (temp->space_right)
-        new_str = NULL;
+        new_str = add_char(temp->space_right, current_arg, 1, ' ');
     else if (temp->first_digit_to_zero)
         new_str = NULL;
     else if (temp->dot_star)
-        new_str = NULL;
-    free(*str);
+        new_str = dot_format(temp->dot_star, current_arg, temp->type, args);
+    else
+        new_str = ft_strdup(current_arg);
+    //free(current_arg);
     return (new_str);
 }
 
@@ -61,9 +88,14 @@ void print_list(t_list *list)
     }
 }
 
-void assign_type(char c, t_flags_state *to_do)
+int assign_type(char c, t_flags_state *to_do)
 {
-    to_do->type = c;
+    if (is_end_of_arg(c))
+    {
+        to_do->type = c;
+        return (0);
+    }
+    return (-1);
 }
 
 /* Should Return something like %-10x | %#-10x | %d | %#-10-50x...
@@ -76,19 +108,17 @@ int is_valid_pattern(char *str, t_flags_state **to_do)
     *to_do = init_to_do();
     while (str[i] != '\0')
     {
-        if (str[i] == 0)
+        if (str[i] == '0')
             i = zero_pattern(str, i, *to_do);
         else if (ft_isdigit(str[i]))
             i = digit_pattern(str, i, *to_do);
         else if (str[i] == '-')
             i = minus_pattern(str, i, *to_do);
         else if (str[i] == '.')
-            i = dot_star_pattern(str, i, *to_do);
+            i = dot_pattern(str, i, *to_do);
         i++;
     }
-    assign_type(str[i - 1], *to_do);
-    free(str);//can't access to free
-    return (0);
+    return (assign_type(str[i - 1], *to_do));
 }
 
 int parse_string(const char *str, t_list **list, va_list args, int *args_idx)
@@ -97,6 +127,7 @@ int parse_string(const char *str, t_list **list, va_list args, int *args_idx)
     int j;
     int last_addition;
     t_flags_state *to_do;
+    char *pattern;
     
     i = 0;
     j = 0;
@@ -106,14 +137,17 @@ int parse_string(const char *str, t_list **list, va_list args, int *args_idx)
         if (str[i] == '%')
         {
             ft_lstadd_back(list, ft_lstnew(ft_substr(str, last_addition, i - last_addition)));
-            while (!is_end_of_arg(str[i + j]) || (str[i + j] == '%' && !(str[i + j - 1] == '%')))
+            while ((!is_end_of_arg(str[i + j]) || (str[i + j] == '%' && j == 0)) && str[i + j] != '\0')
                 j++;
-            if (is_valid_pattern((char*)ft_substr(str, i, j + 1), &to_do) == 0)//possible impossible to free
+            if (is_valid_pattern(pattern = ft_substr(str, i, j + 1), &to_do) == 0)
             {
-                ft_lstadd_back(list, ft_lstnew(convert_string((char**)ft_substr(str, i, j + 1), args, args_idx, &to_do)));
-                i += j;
-                last_addition = i;
+                ft_lstadd_back(list, ft_lstnew(convert_string(args, args_idx, &to_do)));
+                j += 1;
             }
+            i += j;
+            last_addition = i;
+            j = 0;
+            free(pattern);
         }
         i++;
     }
@@ -138,53 +172,7 @@ int ft_printf(const char *format, ...)
 }
 
 int main(void) {
-    char *x = "string";
-    printf("%p\n",x);
-    ft_printf("%p\n", x);
-    /*printf("je test, %#-10x", 12345);
-    printf("je suis une phrase de %-20s, voici un exemple %-10d\n", "test",42);
-    //ft_printf("Hello, dddd!\n");
-    printf("%%\n");
-    printf("%d\n",42);//rend un double
-    printf("%i\n\n",42);//rend un int
-    
-    printf("x : %x\n",1909393);//hexa non signé et lettres miniscules
-    printf("X : %X\n\n",1909393);//hexa non signé et lettres majuscules
-    
-    printf("%u\n",42);
-    printf("%x\n",0x12345);
-
-    printf("%c\n",42);
-    printf("%s\n","sentence");
-    printf("%p\n","sentence");
-    
-    printf("\n=========   #   ==========\n\n");
-    
-    printf("%#x | %x\n",0x12345, 0x12345);
-    printf("%#x | %x\n",12345, 12345);//le # avec une base x, force le 0x, sauf si commence deja par 0x
-    printf("%#o | %o\n",012345,012345);
-    printf("%#o | %o\n",12345,12345);// le # avec une base o, force que le (nombre 1) = 0 sauf si (nombre 1) == 0
-    
-    printf("\n=========   -   ==========\n\n");
-    printf("|%-10d| | |%d|\n",235, 235);//cree un espace de la taille du nombre
-    printf("|%-10x| | |%x|\n",1909393,1909393);//meme effet
-    printf("|%-10%| | |%%|\n");//meme effet
-    printf("|%-10s| | |%s|\n","str","str");//meme effet
-    printf("|%-10c| | |%c|\n",'c','c');//meme effet
-    
-    printf("\n=========   0   ==========\n\n");
-    printf("|%05d| | |%d|\n",235, 235);//cree un espace de x, x = valeur - taille du %d
-    printf("|%010x| | |%x|\n",1909393,1909393);//meme effet
-    printf("|%010%| | |%%|\n");//meme effet
-    //printf("|%010p| | |%p|\n","str","str");aucun effet
-    //printf("|%010c| | |%c|\n",'a','a');aucun effet
-    //printf("|%05s| | |%s|\n","str", "str");aucun effet
-    printf("|%0-5d| | |%d|\n",235, 235);//le - annule le 0
-    
-    printf("\n=========   .*   ==========\n\n");
-    printf( "%.*f\n", 5, 3.14159265 );//arronndie un float à la valeur fournir en arg1
-    printf( "%.*d\n", 5, 42);//meme comportement que le 0
-    printf( "%.*s\n", 3, "string");//raccourcie le string à la taille fournir en arg1
-    printf( "%.*x\n", 3, 1909393);//aucun effet sur x,X*/
+    printf( "%i\n", 123);
+    ft_printf( "%i\n", 123);
     return 0;
 }

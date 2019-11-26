@@ -15,12 +15,12 @@ int zero_pattern(char *str, int pos, t_flags_state *to_do)
     
     i = pos + 1;
     to_do->zero_left = ft_edit_atoi(str);
-    while(ft_isdigit(str[i]))
+    while(ft_isdigit(str[i]) && str[i] != '\0')
         i++;
     return (i);
 }
 
-char    *zero_format(char *str, va_list args)
+char *minus_format(char *str, va_list args)
 {
     return NULL;
 }

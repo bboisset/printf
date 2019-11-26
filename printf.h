@@ -13,13 +13,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdarg.h>
-
-typedef struct              s_list
-{
-    void                    *content;
-    struct s_flags_state    *to_do;
-    struct s_list           *next;
-}                           t_list;
+#include "libft.h"
 
 typedef struct      s_flags_state
 {
@@ -28,41 +22,34 @@ typedef struct      s_flags_state
     int             space_right;
     int             first_digit_to_zero;
     int             dot_star;
+    int             percentage;
     char            type;
 }                   t_flags_state;
 
 /* misc.c */
-void    ft_putstr(const char *str);
-t_list  *ft_lstnew(void *content);
-void    ft_lstadd_back(t_list **alst, t_list *new);
-char    *ft_substr(char const *s, size_t start, size_t len);
-int     ft_isdigit(int c);
-int     ft_edit_atoi(const char *str);
-unsigned long long   ft_number_length(unsigned long long nb);
-int     ft_strlen(const char *s);
-char    *ft_itoa(int n);
-char        *ft_strdup(const char *s1);
-char *num_to_hex(unsigned long long num);
-t_flags_state *init_to_do(void);
-char        *ft_char_to_string(char c);
+int                 ft_edit_atoi(const char *str);
+t_flags_state       *init_to_do(void);
+char                *num_to_hex(uint64_t num);
 
 /* main.c */
-int     is_end_of_arg(char c);
-int     get_type_by_letter(char c);
+int                 is_end_of_arg(char c);
+int                 get_type_by_letter(char c);
+char                *get_arguments(char type, va_list args, int dot_star);
 
 /* flags/zero.c */
-int zero_pattern(char *str, int pos, t_flags_state *to_do);
-char *zero_format(char *str, va_list args);
+int                 zero_pattern(char *str, int pos, t_flags_state *to_do);
+char                *zero_format(char *str, va_list args);
 
 /* flags/minus.c */
-int minus_pattern(char *str, int pos, t_flags_state *to_do);
-char *minus_format(char *str, va_list args);
+int                 minus_pattern(char *str, int pos, t_flags_state *to_do);
+char                *minus_format(char *str, va_list args);
 
 /* flags/dot-star.c */
-int dot_star_pattern(char *str, int pos, t_flags_state *to_do);
-char *dot_star_format(char *str, va_list args);
+int                 dot_pattern(char *str, int pos, t_flags_state *to_do);
+char                *dot_format(int count, char *str, char type, va_list args);
 
 /* flags/zero.c */
-int digit_pattern(char *str, int pos, t_flags_state *to_do);
+int                 digit_pattern(char *str, int pos, t_flags_state *to_do);
+char                *add_char(int space_to_add, char *str, int orientation, char charset);
 
 #endif /* misc_h */
