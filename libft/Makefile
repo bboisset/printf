@@ -1,3 +1,4 @@
+  
 # **************************************************************************** #
 #                                                                              #
 #                                                         :::      ::::::::    #
@@ -20,7 +21,7 @@ SRCS	= 	ft_memset.c ft_bzero.c ft_memcpy.c ft_memccpy.c \
 			ft_strnstr.c ft_atoi.c ft_calloc.c ft_strdup.c ft_substr.c \
 			ft_char_to_string.c ft_itoa.c ft_lstadd_back.c \
 			ft_lstnew.c ft_number_length.c ft_putstr.c ft_strcpy.c \
-			ft_strjoin.c ft_strlowcase.c ft_strrev.c
+			ft_strjoin.c ft_strlowcase.c ft_strrev.c ft_lstfree.c
 
 OBJS	= $(SRCS:.c=.o)
 

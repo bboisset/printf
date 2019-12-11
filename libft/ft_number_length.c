@@ -8,9 +8,9 @@
 
 #include "libft.h"
 
-uint64_t   ft_number_length(uint64_t nb)
+int   ft_number_length(int nb)
 {
-    unsigned long long  length;
+    int  length;
     
     length = 0;
     if (nb == 0)
