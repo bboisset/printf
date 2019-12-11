@@ -1,11 +1,3 @@
-//
-//  misc.c
-//  PrintF
-//
-//  Created by Boisset on 13/11/2019.
-//  Copyright © 2019 Boisset. All rights reserved.
-//
-
 #include "printf.h"
 
 t_flags_state *init_to_do(void)
@@ -20,17 +12,25 @@ t_flags_state *init_to_do(void)
     new->zero_left = 0;
     new->first_digit_to_zero = 0;
     new->dot_star = -2;
-    new->percentage = 0;
+    new->addional_length = 0;
+    //new->negative = 0;
     new->type = '0';
     return (new);
 }
 
-int             ft_edit_atoi(const char *str)
+char *handle_ft_strdup(char *str)
+{
+    if (!str)
+        str = "(null)";
+    return (ft_strdup(str));
+}
+
+int             ft_edit_atoi(const char *str, int start)
 {
     int i;
     int number;
     
-    i = 0;
+    i = start;
     number = 0;
     if (str[0] == '\0')
         return (0);
@@ -52,6 +52,8 @@ char *num_to_hex(uint64_t num)
     uint64_t temp;
     
     i = 0;
+    if (num == 0)
+        return (ft_strdup("0"));
     if (!(res = malloc(sizeof(char) * ft_number_length(num))))
         return (NULL);
     while (num != 0)

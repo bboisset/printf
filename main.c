@@ -33,23 +33,35 @@ char *get_arguments_pointer(char type, va_list args)
     return (NULL);
 }
 
-char *get_arguments(char type, va_list args, int dot_star)
+char *get_arguments(char type, va_list args, t_flags_state *to_do)
 {
     char *res;
+    char temp;
     
     res = NULL;
-    if (type == 'u' || dot_star == -1)
-        res = ft_itoa(va_arg(args, unsigned int));
+    if (type == 'u')
+        res = ft_itoa_uint64_t(va_arg(args, uint64_t));
     else if (type == 'c')
-        res = ft_char_to_string(va_arg(args, uintmax_t));
+    {
+        temp = va_arg(args, uintmax_t);
+        if (temp == '\0')
+            to_do->addional_length += 1;
+        res = ft_char_to_string(temp);
+    }
     else if (type == 's')
-        res = va_arg(args, char*);
+        res = handle_ft_strdup(va_arg(args, char*));
     else if (type == 'p' || type == 'x' || type == 'X')
         res = get_arguments_pointer(type, args);
     else if (type == 'i' || type == 'd')
         res = ft_itoa((va_arg(args, int)));
     else if (type == '%')
         res = ft_char_to_string('%');
+    if (res == NULL && type == 's')
+        res = ft_strdup("(null)");
+    else if(res == NULL && type == 'p')
+        res = ft_strdup("0x0");
+    else if (res == NULL)
+        res = ft_char_to_string('0');
     return (res);
 }
 
@@ -61,31 +73,39 @@ char *convert_string(va_list args, t_flags_state **to_do)
     
     temp = *to_do;
     new_str = NULL;
-    if (!(current_arg = get_arguments(temp->type, args, temp->dot_star)))
+    if (!(current_arg = get_arguments(temp->type, args, *to_do)))
         return (NULL);
+    temp->space_left = (temp->type == 'c' && current_arg[0] == 0) ? temp->space_left - 1 : temp->space_left;
+    temp->space_right = (temp->type == 'c' && current_arg[0] == '\0') ? temp->space_right - 1 : temp->space_right;
+    temp->zero_left = (temp->type == 'c' && current_arg[0] == '\0') ? temp->zero_left - 1 : temp->zero_left;
+    if (temp->dot_star != -2 && temp->type != '%' && temp->type != 'c' && temp->type != 'p')
+        new_str = dot_format(temp->dot_star, current_arg, new_str, temp);
+    if (temp->space_left)
+        new_str = add_char(temp->space_left, current_arg, new_str, 0, ' ');
+    if (temp->space_right)
+        new_str = add_char(temp->space_right, current_arg, new_str, 1, ' ');
     if (temp->zero_left)
-        new_str = add_char(temp->zero_left, current_arg, 0, '0');
-    else if (temp->space_left)
-        new_str = add_char(temp->space_left, current_arg, 0, ' ');
-    else if (temp->space_right)
-        new_str = add_char(temp->space_right, current_arg, 1, ' ');
-    else if (temp->first_digit_to_zero)
+        new_str = add_char(temp->zero_left, current_arg, new_str, 0, ((temp->type != 's' && is_dot_applicable(temp->type) && temp->dot_star != -2)) ? ' ' : '0');
+    if (temp->first_digit_to_zero)
         new_str = NULL;
-    else if (temp->dot_star != -2)
-        new_str = dot_format(temp->dot_star, current_arg, temp->type, args);
-    else
+    if (new_str == NULL)
         new_str = ft_strdup(current_arg);
-    //free(current_arg);
+    free(current_arg);
     return (new_str);
 }
 
-void print_list(t_list *list)
+int print_list(t_list *list)
 {
+    int strlen;
+    
+    strlen = 0;
     while (list != NULL)
     {
         ft_putstr(list->content);
+        strlen += ft_strlen(list->content);
         list = list->next;
     }
+    return (strlen);
 }
 
 int assign_type(char c, t_flags_state *to_do)
@@ -100,7 +120,7 @@ int assign_type(char c, t_flags_state *to_do)
 
 /* Should Return something like %-10x | %#-10x | %d | %#-10-50x...
  */
-int is_valid_pattern(char *str, t_flags_state **to_do)
+int is_valid_pattern(char *str, t_flags_state **to_do, va_list args)
 {
     int i;
     
@@ -109,14 +129,15 @@ int is_valid_pattern(char *str, t_flags_state **to_do)
     while (str[i] != '\0')
     {
         if (str[i] == '0')
-            i = zero_pattern(str, i, *to_do);
-        else if (ft_isdigit(str[i]))
-            i = digit_pattern(str, i, *to_do);
-        else if (str[i] == '-')
-            i = minus_pattern(str, i, *to_do);
+            i = zero_pattern(str, i, *to_do, args);
+        else if (ft_isdigit(str[i]) || str[i] == '*')
+            i = digit_pattern(str, i, *to_do, args);
         else if (str[i] == '.')
-            i = dot_pattern(str, i, *to_do);
-        i++;
+            i = dot_pattern(str, i, *to_do, args);
+        else if (str[i] == '-')
+            i = minus_pattern(str, i, *to_do, args);
+        else
+            i++;
     }
     return (assign_type(str[i - 1], *to_do));
 }
@@ -126,11 +147,13 @@ int parse_string(const char *str, t_list **list, va_list args)
     int i;
     int j;
     int last_addition;
+    int addional_length;
     t_flags_state *to_do;
     char *pattern;
     
     i = 0;
     j = 0;
+    addional_length = 0;
     last_addition = 0;
     while (str[i] != '\0')
     {
@@ -139,33 +162,38 @@ int parse_string(const char *str, t_list **list, va_list args)
             ft_lstadd_back(list, ft_lstnew(ft_substr(str, last_addition, i - last_addition)));
             while ((!is_end_of_arg(str[i + j]) || (str[i + j] == '%' && j == 0)) && str[i + j] != '\0')
                 j++;
-            if (is_valid_pattern(pattern = ft_substr(str, i, j + 1), &to_do) == 0)
+            if (is_valid_pattern(pattern = ft_substr(str, i, j + 1), &to_do, args) == 0)
             {
                 ft_lstadd_back(list, ft_lstnew(convert_string(args, &to_do)));
                 j += 1;
             }
+            addional_length += to_do->addional_length;
+            free(to_do);
             i += j;
             last_addition = i;
             j = 0;
             free(pattern);
         }
-		else
-        	i++;
+        else
+            i++;
     }
     ft_lstadd_back(list, ft_lstnew(ft_substr(str, last_addition, i - last_addition)));
-    return (1);
+    return (addional_length);
 }
 
 int ft_printf(const char *format, ...)
 {
     t_list  *list;
     va_list args;
+    int strlen;
+    int addional_length;
     
+    addional_length = 0;
     va_start(args, format);
     list = NULL;
-    parse_string(format, &list, args);
+    addional_length = parse_string(format, &list, args);
     va_end(args);
-    print_list(list);
-    //free list
-    return (0);
+    strlen = print_list(list) + addional_length;
+    ft_lstfree(&list);
+    return (strlen);
 }

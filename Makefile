@@ -1,6 +1,6 @@
 NAME		= 	libftprintf.a
 
-LIBFT		=	libft
+LIBFT		=	ft_libft
 
 SRCS		=	main.c misc.c \
 				flags/digit.c flags/dot_star.c \
@@ -18,7 +18,7 @@ all: $(NAME)
 
 $(NAME): $(OBJS)
 				make -C $(LIBFT)
-				cp libft/libft.a ./$(NAME)
+				cp $(LIBFT)/libft.a ./$(NAME)
 				ar -rcs $(NAME) $(OBJS)
 
 %.o: %.c
