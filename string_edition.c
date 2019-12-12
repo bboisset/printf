@@ -6,7 +6,7 @@
 /*   By: bboisset <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/12 16:28:31 by bboisset          #+#    #+#             */
-/*   Updated: 2019/12/12 18:22:08 by bboisset         ###   ########.fr       */
+/*   Updated: 2019/12/12 23:05:36 by bboisset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ char		*get_arguments(char type, va_list args, t_flags_state *to_do)
 	else if (type == 'c')
 	{
 		if ((temp = va_arg(args, uintmax_t)) == '\0')
-			to_do->addional_length += 1;
+			to_do->length += 1;
 		res = ft_char_to_string(temp);
 	}
 	else if (type == 's')
@@ -107,5 +107,6 @@ char		*convert_string(va_list args, t_flags_state **to_do)
 	if (new_str == NULL)
 		new_str = ft_strdup(current_arg);
 	free(current_arg);
+	temp->length += ft_strlen(new_str);
 	return (new_str);
 }

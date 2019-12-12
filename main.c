@@ -6,7 +6,7 @@
 /*   By: bboisset <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/12 14:44:03 by bboisset          #+#    #+#             */
-/*   Updated: 2019/12/12 16:40:51 by bboisset         ###   ########.fr       */
+/*   Updated: 2019/12/12 23:37:32 by bboisset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,16 +14,16 @@
 
 int		print_list(t_list *list)
 {
-	int	strlen;
+	int	len;
 
-	strlen = 0;
+	len = 0;
 	while (list != NULL)
 	{
-		ft_putstr(list->content);
-		strlen += ft_strlen(list->content);
+		edit_ft_putstr(list->content, list->str_len);
+		len += list->str_len;
 		list = list->next;
 	}
-	return (strlen);
+	return (len);
 }
 
 int		assign_type(char c, t_flags_state *to_do)
@@ -58,62 +58,57 @@ int		is_valid_pattern(char *str, t_flags_state **to_do, va_list args)
 	return (assign_type(str[i - 1], *to_do));
 }
 
-int		parse_string(const char *str, t_list **list, va_list args)
+void	parse_string(const char *str, t_list **list, va_list args)
 {
 	int				i;
 	int				j;
 	int				last_addition;
-	int				addional_length;
 	t_flags_state	*to_do;
-	char			*pattern;
+	char			*temp;
 
 	i = 0;
 	j = 0;
-	addional_length = 0;
 	last_addition = 0;
 	while (str[i] != '\0')
 	{
 		if (str[i] == '%')
 		{
-			ft_lstadd_back(list, ft_lstnew(ft_substr(str, last_addition,
-							i - last_addition)));
+			temp = ft_substr(str, last_addition, i - last_addition);
+			ft_lstadd_back(list, ft_lstnew(temp, ft_strlen(temp)));
 			while ((!is_end_of_arg(str[i + j]) || (str[i + j] == '%' && j == 0))
 					&& str[i + j] != '\0')
 				j++;
-			if (is_valid_pattern(pattern = ft_substr(str, i, j + 1),
+			if (is_valid_pattern(temp = ft_substr(str, i, j + 1),
 						&to_do, args) == 0)
 			{
-				ft_lstadd_back(list, ft_lstnew(convert_string(args, &to_do)));
+				ft_lstadd_back(list, ft_lstnew(convert_string(args, &to_do),
+							to_do->length));
 				j += 1;
 			}
-			addional_length += to_do->addional_length;
 			free(to_do);
 			i += j;
 			last_addition = i;
 			j = 0;
-			free(pattern);
+			free(temp);
 		}
 		else
 			i++;
 	}
-	ft_lstadd_back(list, ft_lstnew(ft_substr(str, last_addition,
-					i - last_addition)));
-	return (addional_length);
+	temp = ft_substr(str, last_addition, i - last_addition);
+	ft_lstadd_back(list, ft_lstnew(temp, ft_strlen(temp)));
 }
 
 int		ft_printf(const char *format, ...)
 {
 	t_list		*list;
 	va_list		args;
-	int			strlen;
-	int			addional_length;
+	int			len;
 
-	addional_length = 0;
 	va_start(args, format);
 	list = NULL;
-	addional_length = parse_string(format, &list, args);
+	parse_string(format, &list, args);
 	va_end(args);
-	strlen = print_list(list) + addional_length;
+	len = print_list(list);
 	ft_lstfree(&list);
-	return (strlen);
+	return (len);
 }

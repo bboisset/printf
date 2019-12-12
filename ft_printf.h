@@ -6,7 +6,7 @@
 /*   By: bboisset <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/12 14:53:36 by bboisset          #+#    #+#             */
-/*   Updated: 2019/12/12 16:42:59 by bboisset         ###   ########.fr       */
+/*   Updated: 2019/12/12 23:21:09 by bboisset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,11 +26,12 @@ typedef struct		s_flags_state
 	int				space_right;
 	int				first_digit_to_zero;
 	int				dot_star;
-	int				addional_length;
+	int				length;
 	char			type;
 }					t_flags_state;
 
 int					ft_edit_atoi(const char *str, int start);
+void				edit_ft_putstr(char *str, int str_len);
 t_flags_state		*init_to_do(void);
 char				*num_to_hex(uint64_t num);
 char				*handle_ft_strdup(char *str);

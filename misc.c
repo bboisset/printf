@@ -6,7 +6,7 @@
 /*   By: bboisset <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/12 14:49:17 by bboisset          #+#    #+#             */
-/*   Updated: 2019/12/12 16:41:05 by bboisset         ###   ########.fr       */
+/*   Updated: 2019/12/12 23:10:30 by bboisset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,9 +24,15 @@ t_flags_state	*init_to_do(void)
 	new->zero_left = 0;
 	new->first_digit_to_zero = 0;
 	new->dot_star = -2;
-	new->addional_length = 0;
+	new->length = 0;
 	new->type = '0';
 	return (new);
+}
+
+void			edit_ft_putstr(char *str, int str_len)
+{
+	if (str)
+		write(1, str, str_len);
 }
 
 char			*handle_ft_strdup(char *str)

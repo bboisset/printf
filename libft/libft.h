@@ -6,7 +6,7 @@
 /*   By: bboisset <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/14 14:45:42 by bboisset          #+#    #+#             */
-/*   Updated: 2019/12/12 16:18:28 by bboisset         ###   ########.fr       */
+/*   Updated: 2019/12/12 23:17:21 by bboisset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 typedef struct		s_list
 {
 	void			*content;
+	int				str_len;
 	struct s_list	*next;
 }					t_list;
 
@@ -69,7 +70,7 @@ void				ft_putstr(const char *str);
 
 int					ft_number_length(int nb);
 
-t_list				*ft_lstnew(void *content);
+t_list				*ft_lstnew(void *content, int content_len);
 void				ft_lstadd_back(t_list **alst, t_list *new);
 void				ft_lstfree(t_list **a_list);
 

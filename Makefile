@@ -10,7 +10,7 @@ OBJS		=	$(SRCS:.c=.o)
 
 CC			=	gcc
 
-GFLAGS		=	-Wall -Werror -Wextra
+GFLAGS		=	-Wall -Werror -Wextra -g
 
 RM			=	rm -f
 
