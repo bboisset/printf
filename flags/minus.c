@@ -6,11 +6,11 @@
 /*   By: bboisset <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/12 15:03:27 by bboisset          #+#    #+#             */
-/*   Updated: 2019/12/12 15:03:47 by bboisset         ###   ########.fr       */
+/*   Updated: 2019/12/12 16:41:43 by bboisset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "printf.h"
+#include "ft_printf.h"
 #include <stdarg.h>
 
 int	minus_pattern(char *str, int pos, t_flags_state *to_do, va_list arg)

@@ -1,19 +1,23 @@
-//
-//  ft_putstr.c
-//  PrintF
-//
-//  Created by Boisset on 22/11/2019.
-//  Copyright © 2019 Boisset. All rights reserved.
-//
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_putstr.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: bboisset <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/12/12 16:05:43 by bboisset          #+#    #+#             */
+/*   Updated: 2019/12/12 16:10:18 by bboisset         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "libft.h"
 
-void    ft_putstr(const char *str)
+void	ft_putstr(const char *str)
 {
-    int i;
-    
-    i = 0;
-    if (str)
-        while(str[i] != '\0')
-            write(1, &str[i++], 1);
+	int i;
+
+	i = 0;
+	if (str)
+		while (str[i] != '\0')
+			write(1, &str[i++], 1);
 }

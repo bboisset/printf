@@ -6,7 +6,7 @@
 /*   By: bboisset <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/12 14:53:36 by bboisset          #+#    #+#             */
-/*   Updated: 2019/12/12 14:55:31 by bboisset         ###   ########.fr       */
+/*   Updated: 2019/12/12 16:42:59 by bboisset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,10 +36,13 @@ char				*num_to_hex(uint64_t num);
 char				*handle_ft_strdup(char *str);
 
 int					is_end_of_arg(char c);
-int					get_type_by_letter(char c);
-int					ft_printf(const char *format, ...);
 char				*get_arguments(char type, va_list args,
 		t_flags_state *to_do);
+char				*convert_string(va_list args, t_flags_state **to_do);
+
+
+int					get_type_by_letter(char c);
+int					ft_printf(const char *format, ...);
 
 int					zero_pattern(char *str, int pos, t_flags_state *to_do,
 		va_list arg);

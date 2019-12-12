@@ -1,8 +1,8 @@
 NAME		= 	libftprintf.a
 
-LIBFT		=	ft_libft
+LIBFT		=	libft
 
-SRCS		=	main.c misc.c \
+SRCS		=	main.c misc.c string_edition.c \
 				flags/digit.c flags/dot_star.c \
 				flags/minus.c flags/zero.c
 

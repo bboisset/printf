@@ -6,7 +6,7 @@
 /*   By: bboisset <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/10 19:42:51 by bboisset          #+#    #+#             */
-/*   Updated: 2019/10/17 20:43:11 by bboisset         ###   ########.fr       */
+/*   Updated: 2019/12/12 16:17:16 by bboisset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,15 +40,11 @@ char		*ft_strtrim(char const *s1, char const *set)
 	while (is_in_set(s1[i - 1], set) && i > to_rm)
 		i--;
 	j = i - to_rm;
-	if(!(str = ft_calloc(j + 1, sizeof(char))))
+	if (!(str = ft_calloc(j + 1, sizeof(char))))
 		return (NULL);
 	j--;
 	i--;
 	while (j + 1 > 0)
-	{
-		str[j] = s1[i];
-		j--;
-		i--;
-	}
+		str[j--] = s1[i--];
 	return (str);
 }

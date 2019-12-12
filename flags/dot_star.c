@@ -6,11 +6,11 @@
 /*   By: bboisset <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/12 15:02:19 by bboisset          #+#    #+#             */
-/*   Updated: 2019/12/12 15:03:07 by bboisset         ###   ########.fr       */
+/*   Updated: 2019/12/12 16:41:34 by bboisset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "printf.h"
+#include "ft_printf.h"
 
 int		is_dot_applicable(char c)
 {

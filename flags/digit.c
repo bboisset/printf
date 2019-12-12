@@ -6,11 +6,11 @@
 /*   By: bboisset <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/12 14:57:56 by bboisset          #+#    #+#             */
-/*   Updated: 2019/12/12 14:59:08 by bboisset         ###   ########.fr       */
+/*   Updated: 2019/12/12 16:41:25 by bboisset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "printf.h"
+#include "ft_printf.h"
 #include <stdarg.h>
 
 int			digit_pattern(char *str, int pos, t_flags_state *to_do, va_list arg)

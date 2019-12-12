@@ -6,11 +6,11 @@
 /*   By: bboisset <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/12 14:49:17 by bboisset          #+#    #+#             */
-/*   Updated: 2019/12/12 14:49:42 by bboisset         ###   ########.fr       */
+/*   Updated: 2019/12/12 16:41:05 by bboisset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "printf.h"
+#include "ft_printf.h"
 
 t_flags_state	*init_to_do(void)
 {
