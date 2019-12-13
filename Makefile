@@ -4,7 +4,7 @@ LIBFT		=	libft
 
 SRCS		=	main.c misc.c string_edition.c \
 				flags/digit.c flags/dot_star.c \
-				flags/minus.c flags/zero.c
+				flags/minus.c flags/zero.c exit.c
 
 OBJS		=	$(SRCS:.c=.o)
 

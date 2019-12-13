@@ -6,7 +6,7 @@
 /*   By: bboisset <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/12 14:49:17 by bboisset          #+#    #+#             */
-/*   Updated: 2019/12/12 16:41:05 by bboisset         ###   ########.fr       */
+/*   Updated: 2019/12/13 23:04:56 by bboisset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 t_flags_state	*init_to_do(void)
 {
-	t_flags_state *new;
+	t_flags_state	*new;
 
 	if (!(new = (t_flags_state*)malloc(sizeof(t_flags_state))))
 		return (NULL);
@@ -24,9 +24,15 @@ t_flags_state	*init_to_do(void)
 	new->zero_left = 0;
 	new->first_digit_to_zero = 0;
 	new->dot_star = -2;
-	new->addional_length = 0;
+	new->length = 0;
 	new->type = '0';
 	return (new);
+}
+
+void			edit_ft_putstr(char *str, int str_len)
+{
+	if (str)
+		write(1, str, str_len);
 }
 
 char			*handle_ft_strdup(char *str)
@@ -48,7 +54,7 @@ int				ft_edit_atoi(const char *str, int start)
 	while (!ft_isdigit(str[i]))
 	{
 		i++;
-		if (str[i] == '\0')
+		if (str[i] == '\0' || str[i] == '.' || str[i] == '-')
 			return (-1);
 	}
 	while (ft_isdigit(str[i]) && str[i] != '\0')

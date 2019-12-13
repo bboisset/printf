@@ -6,27 +6,13 @@
 /*   By: bboisset <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/12 14:44:03 by bboisset          #+#    #+#             */
-/*   Updated: 2019/12/12 16:40:51 by bboisset         ###   ########.fr       */
+/*   Updated: 2019/12/13 22:43:51 by bboisset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-int		print_list(t_list *list)
-{
-	int	strlen;
-
-	strlen = 0;
-	while (list != NULL)
-	{
-		ft_putstr(list->content);
-		strlen += ft_strlen(list->content);
-		list = list->next;
-	}
-	return (strlen);
-}
-
-int		assign_type(char c, t_flags_state *to_do)
+int			assign_type(char c, t_flags_state *to_do)
 {
 	if (is_end_of_arg(c))
 	{
@@ -36,7 +22,7 @@ int		assign_type(char c, t_flags_state *to_do)
 	return (-1);
 }
 
-int		is_valid_pattern(char *str, t_flags_state **to_do, va_list args)
+int			is_valid_pattern(char *str, t_flags_state **to_do, va_list args)
 {
 	int	i;
 
@@ -58,62 +44,80 @@ int		is_valid_pattern(char *str, t_flags_state **to_do, va_list args)
 	return (assign_type(str[i - 1], *to_do));
 }
 
-int		parse_string(const char *str, t_list **list, va_list args)
+int			string_edition_end(char **str, int pre_fill_len)
 {
-	int				i;
-	int				j;
-	int				last_addition;
-	int				addional_length;
+	if (!pre_fill_len)
+		pre_fill_len = ft_strlen(*str);
+	edit_ft_putstr(*str, pre_fill_len);
+	free(*str);
+	return (pre_fill_len);
+}
+
+int			str_to_edit(const char *str, int i, int *total_len, va_list args)
+{
 	t_flags_state	*to_do;
 	char			*pattern;
+	char			*temp;
+	int				j;
+
+	j = 0;
+	while ((!is_end_of_arg(str[i + j]) || (str[i + j] == '%' && j == 0))
+			&& str[i + j] != '\0')
+		j++;
+	if (!(pattern = ft_substr(str, i, j + 1)))
+		return (exit_on_error_str_edit(&pattern, &to_do));
+	if (is_valid_pattern(pattern, &to_do, args) == 0)
+	{
+		if (!(temp = convert_string(args, &to_do)))
+			return (exit_on_error_str_edit(&pattern, &to_do));
+		*total_len += string_edition_end(&temp, to_do->length);
+		j += 1;
+	}
+	free(pattern);
+	free(to_do);
+	return (j);
+}
+
+int			parse_string(const char *str, int *total_len, va_list args)
+{
+	int		i;
+	int		j;
+	int		last_addition;
+	char	*temp;
+
 
 	i = 0;
-	j = 0;
-	addional_length = 0;
 	last_addition = 0;
 	while (str[i] != '\0')
 	{
 		if (str[i] == '%')
 		{
-			ft_lstadd_back(list, ft_lstnew(ft_substr(str, last_addition,
-							i - last_addition)));
-			while ((!is_end_of_arg(str[i + j]) || (str[i + j] == '%' && j == 0))
-					&& str[i + j] != '\0')
-				j++;
-			if (is_valid_pattern(pattern = ft_substr(str, i, j + 1),
-						&to_do, args) == 0)
-			{
-				ft_lstadd_back(list, ft_lstnew(convert_string(args, &to_do)));
-				j += 1;
-			}
-			addional_length += to_do->addional_length;
-			free(to_do);
+			if (!(temp = ft_substr(str, last_addition, i - last_addition)))
+				return (-1);
+			*total_len += string_edition_end(&temp, 0);
+			if ((j = str_to_edit(str, i, total_len, args)) == -1)
+				return (-1);
 			i += j;
 			last_addition = i;
-			j = 0;
-			free(pattern);
 		}
 		else
 			i++;
 	}
-	ft_lstadd_back(list, ft_lstnew(ft_substr(str, last_addition,
-					i - last_addition)));
-	return (addional_length);
+	if (!(temp = ft_substr(str, last_addition, i - last_addition)))
+		return (-1);
+	*total_len += string_edition_end(&temp, 0);
+	return (0);
 }
 
-int		ft_printf(const char *format, ...)
+int			ft_printf(const char *format, ...)
 {
-	t_list		*list;
-	va_list		args;
-	int			strlen;
-	int			addional_length;
+	va_list	args;
+	int		total_len;
 
-	addional_length = 0;
+	total_len = 0;
 	va_start(args, format);
-	list = NULL;
-	addional_length = parse_string(format, &list, args);
+	if (parse_string(format, &total_len, args) == -1)
+		return (-1);
 	va_end(args);
-	strlen = print_list(list) + addional_length;
-	ft_lstfree(&list);
-	return (strlen);
+	return (total_len);
 }
