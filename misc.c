@@ -6,7 +6,7 @@
 /*   By: bboisset <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/12 14:49:17 by bboisset          #+#    #+#             */
-/*   Updated: 2019/12/13 23:04:56 by bboisset         ###   ########.fr       */
+/*   Updated: 2019/12/13 23:49:37 by bboisset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,37 +29,14 @@ t_flags_state	*init_to_do(void)
 	return (new);
 }
 
-void			edit_ft_putstr(char *str, int str_len)
+int				assign_type(char c, t_flags_state *to_do)
 {
-	if (str)
-		write(1, str, str_len);
-}
-
-char			*handle_ft_strdup(char *str)
-{
-	if (!str)
-		str = "(null)";
-	return (ft_strdup(str));
-}
-
-int				ft_edit_atoi(const char *str, int start)
-{
-	int i;
-	int number;
-
-	i = start;
-	number = 0;
-	if (str[0] == '\0')
-		return (0);
-	while (!ft_isdigit(str[i]))
+	if (is_end_of_arg(c))
 	{
-		i++;
-		if (str[i] == '\0' || str[i] == '.' || str[i] == '-')
-			return (-1);
+		to_do->type = c;
+		return (0);
 	}
-	while (ft_isdigit(str[i]) && str[i] != '\0')
-		number = number * 10 + (str[i++] - '0');
-	return (number);
+	return (-1);
 }
 
 char			*num_to_hex(uint64_t num)

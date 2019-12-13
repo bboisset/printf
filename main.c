@@ -6,21 +6,11 @@
 /*   By: bboisset <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/12 14:44:03 by bboisset          #+#    #+#             */
-/*   Updated: 2019/12/13 22:43:51 by bboisset         ###   ########.fr       */
+/*   Updated: 2019/12/13 23:50:42 by bboisset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
-
-int			assign_type(char c, t_flags_state *to_do)
-{
-	if (is_end_of_arg(c))
-	{
-		to_do->type = c;
-		return (0);
-	}
-	return (-1);
-}
 
 int			is_valid_pattern(char *str, t_flags_state **to_do, va_list args)
 {
@@ -85,7 +75,6 @@ int			parse_string(const char *str, int *total_len, va_list args)
 	int		last_addition;
 	char	*temp;
 
-
 	i = 0;
 	last_addition = 0;
 	while (str[i] != '\0')
@@ -100,8 +89,7 @@ int			parse_string(const char *str, int *total_len, va_list args)
 			i += j;
 			last_addition = i;
 		}
-		else
-			i++;
+		i = (str[i] != '%') ? i + 1 : i;
 	}
 	if (!(temp = ft_substr(str, last_addition, i - last_addition)))
 		return (-1);

@@ -6,7 +6,7 @@
 /*   By: bboisset <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/12 16:28:31 by bboisset          #+#    #+#             */
-/*   Updated: 2019/12/13 22:45:32 by bboisset         ###   ########.fr       */
+/*   Updated: 2019/12/14 00:01:32 by bboisset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,7 +104,7 @@ char			*convert_string(va_list args, t_flags_state **to_do)
 	if (temp->zero_left)
 		if (!(new_str = add_char(temp->zero_left, c_arg, new_str, 0,
 						((temp->type != 's' && is_dot_applicable(temp->type)
-						  && temp->dot_star != -2)) ? ' ' : '0')))
+						&& temp->dot_star != -2)) ? ' ' : '0')))
 			return (exit_cvt_str(&c_arg));
 	if (temp->first_digit_to_zero)
 		new_str = NULL;

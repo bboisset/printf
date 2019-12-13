@@ -6,7 +6,7 @@
 /*   By: bboisset <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/12 14:57:56 by bboisset          #+#    #+#             */
-/*   Updated: 2019/12/13 23:32:00 by bboisset         ###   ########.fr       */
+/*   Updated: 2019/12/13 23:58:57 by bboisset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,6 @@ int			digit_pattern(char *str, int pos, t_flags_state *to_do, va_list arg)
 		i++;
 	return (i);
 }
-
 
 static char	*minus_edition(char *str, int *negative, int type)
 {
@@ -95,8 +94,10 @@ char		*add_char(int space_to_add, char *str, char *prefix,
 			exit_on_error_add_char(&temp, &prefix, 3);
 	}
 	else
+	{
 		if (!(new_str = ft_strjoin(str, temp)))
 			exit_on_error_add_char(&temp, &prefix, 3);
+	}
 	free(temp);
 	free(prefix);
 	if (negative)
