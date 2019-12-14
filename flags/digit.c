@@ -6,7 +6,7 @@
 /*   By: bboisset <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/12 14:57:56 by bboisset          #+#    #+#             */
-/*   Updated: 2019/12/13 23:58:57 by bboisset         ###   ########.fr       */
+/*   Updated: 2019/12/14 03:21:59 by bboisset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,8 @@ int			digit_pattern(char *str, int pos, t_flags_state *to_do, va_list arg)
 	return (i);
 }
 
-static char	*minus_edition(char *str, int *negative, int type)
+static char	*minus_edition(char *str, int *negative, int type,
+		t_str_edition *str_edit)
 {
 	char	*res;
 	int		i;
@@ -42,6 +43,7 @@ static char	*minus_edition(char *str, int *negative, int type)
 	if (type == 0)
 	{
 		i = 0;
+		str_edit->space_add--;
 		*negative = 1;
 		while (str[i + 1] != '\0')
 		{
@@ -61,8 +63,27 @@ static char	*minus_edition(char *str, int *negative, int type)
 	}
 }
 
-char		*add_char(int space_to_add, char *str, char *prefix,
-		int orientation, char charset)
+static char	*add_char_end(t_str_edition str_edit, char **temp, char **prefix,
+		char *str)
+{
+	char	*new_str;
+
+	if (str_edit.orientation == 0)
+	{
+		if (!(new_str = ft_strjoin(*temp, str)))
+			exit_on_error_add_char(temp, prefix, 3);
+	}
+	else
+	{
+		if (!(new_str = ft_strjoin(str, *temp)))
+			exit_on_error_add_char(temp, prefix, 3);
+	}
+	free(*temp);
+	free(*prefix);
+	return (new_str);
+}
+
+char		*add_char(t_str_edition str_edit, char *str, char *prefix)
 {
 	char	*temp;
 	char	*new_str;
@@ -73,35 +94,20 @@ char		*add_char(int space_to_add, char *str, char *prefix,
 	i = 0;
 	negative = 0;
 	str = (prefix != NULL) ? prefix : str;
-	if (charset == '0' && str[0] == '-')
-	{
-		str = minus_edition(str, &negative, 0);
-		space_to_add--;
-	}
+	if (str_edit.charset == '0' && str[0] == '-')
+		str = minus_edition(str, &negative, 0, &str_edit);
 	str_len = ft_strlen(str);
-	space_to_add = (space_to_add - str_len > 0) ? space_to_add - str_len : 0;
-	if (!(temp = malloc((space_to_add + 1) * sizeof(char))))
+	str_edit.space_add =
+		(str_edit.space_add - str_len > 0) ? str_edit.space_add - str_len : 0;
+	if (!(temp = malloc((str_edit.space_add + 1) * sizeof(char))))
 		exit_on_error_add_char(&temp, &prefix, 2);
-	while (space_to_add > 0)
-	{
-		temp[i++] = charset;
-		space_to_add--;
-	}
+	while (str_edit.space_add-- > 0)
+		temp[i++] = str_edit.charset;
 	temp[i] = '\0';
-	if (orientation == 0)
-	{
-		if (!(new_str = ft_strjoin(temp, str)))
-			exit_on_error_add_char(&temp, &prefix, 3);
-	}
-	else
-	{
-		if (!(new_str = ft_strjoin(str, temp)))
-			exit_on_error_add_char(&temp, &prefix, 3);
-	}
-	free(temp);
-	free(prefix);
+	if (!(new_str = add_char_end(str_edit, &temp, &prefix, str)))
+		return (NULL);
 	if (negative)
-		if (!(new_str = minus_edition(new_str, &negative, 1)))
+		if (!(new_str = minus_edition(new_str, &negative, 1, &str_edit)))
 			return (NULL);
 	return (new_str);
 }

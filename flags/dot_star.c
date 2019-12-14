@@ -6,7 +6,7 @@
 /*   By: bboisset <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/12 15:02:19 by bboisset          #+#    #+#             */
-/*   Updated: 2019/12/13 23:59:15 by bboisset         ###   ########.fr       */
+/*   Updated: 2019/12/14 02:17:48 by bboisset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,5 +63,5 @@ char		*dot_format(int count, char *str, t_flags_state *to_do)
 		return (ft_substr(str, 1, count));
 	else if (count < str_len)
 		return (ft_substr(str, 0, count));
-	return (add_char(count, str, NULL, 0, '0'));
+	return (add_char(init_str_edition(count, 0, '0'), str, NULL));
 }

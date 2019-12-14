@@ -6,7 +6,7 @@
 /*   By: bboisset <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/12 14:49:17 by bboisset          #+#    #+#             */
-/*   Updated: 2019/12/13 23:49:37 by bboisset         ###   ########.fr       */
+/*   Updated: 2019/12/14 02:29:16 by bboisset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,22 @@ t_flags_state	*init_to_do(void)
 	new->length = 0;
 	new->type = '0';
 	return (new);
+}
+
+t_str_edition	init_str_edition(int space_to_add, int orientation, int charset)
+{
+	t_str_edition	edit_str;
+
+	edit_str.space_add = space_to_add;
+	edit_str.orientation = orientation;
+	edit_str.charset = charset;
+	return (edit_str);
+}
+
+int				is_end_of_arg(char c)
+{
+	return ((c == 'c' || c == 's' || c == 'p' || c == 'd' || c == 'i'
+				|| c == 'u' || c == 'x' || c == 'X' || c == '%') ? 1 : 0);
 }
 
 int				assign_type(char c, t_flags_state *to_do)
