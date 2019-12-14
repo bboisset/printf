@@ -6,19 +6,13 @@
 /*   By: bboisset <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/12 16:28:31 by bboisset          #+#    #+#             */
-/*   Updated: 2019/12/12 18:22:08 by bboisset         ###   ########.fr       */
+/*   Updated: 2019/12/14 02:30:50 by bboisset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-int			is_end_of_arg(char c)
-{
-	return ((c == 'c' || c == 's' || c == 'p' || c == 'd' || c == 'i'
-				|| c == 'u' || c == 'x' || c == 'X' || c == '%') ? 1 : 0);
-}
-
-static char	*get_arguments_pointer(char type, va_list args)
+static char		*get_arguments_pointer(char type, va_list args)
 {
 	char		*res;
 	uintmax_t	temp;
@@ -38,7 +32,7 @@ static char	*get_arguments_pointer(char type, va_list args)
 	return (NULL);
 }
 
-char		*get_arguments(char type, va_list args, t_flags_state *to_do)
+char			*get_arguments(char type, va_list args, t_flags_state *to_do)
 {
 	char	*res;
 	char	temp;
@@ -49,7 +43,7 @@ char		*get_arguments(char type, va_list args, t_flags_state *to_do)
 	else if (type == 'c')
 	{
 		if ((temp = va_arg(args, uintmax_t)) == '\0')
-			to_do->addional_length += 1;
+			to_do->length += 1;
 		res = ft_char_to_string(temp);
 	}
 	else if (type == 's')
@@ -67,7 +61,7 @@ char		*get_arguments(char type, va_list args, t_flags_state *to_do)
 	return (res);
 }
 
-static void struct_edit(t_flags_state **to_do, char *current_arg)
+static void		struct_edit(t_flags_state **to_do, char *current_arg)
 {
 	t_flags_state	*temp;
 
@@ -80,32 +74,48 @@ static void struct_edit(t_flags_state **to_do, char *current_arg)
 		? temp->zero_left - 1 : temp->zero_left;
 }
 
-char		*convert_string(va_list args, t_flags_state **to_do)
+int				convert_string_format(char **c_arg, char **new_str,
+		t_flags_state *temp)
+{
+	struct_edit(&temp, *c_arg);
+	if (temp->dot_star != -2 && temp->type != '%' && temp->type != 'c'
+			&& temp->type != 'p')
+		if (!(*new_str = dot_format(temp->dot_star, *c_arg, temp)))
+			return (exit_cvt_str_ft(c_arg));
+	if (temp->space_left)
+		if (!(*new_str = add_char(init_str_edition(temp->space_left,
+							0, ' '), *c_arg, *new_str)))
+			return (exit_cvt_str_ft(c_arg));
+	if (temp->space_right)
+		if (!(*new_str = add_char(init_str_edition(temp->space_right,
+							1, ' '), *c_arg, *new_str)))
+			return (exit_cvt_str_ft(c_arg));
+	if (temp->zero_left)
+		if (!(*new_str = add_char(init_str_edition(temp->zero_left, 0,
+		((temp->type != 's' && is_dot_applicable(temp->type) &&
+		temp->dot_star != -2)) ? ' ' : '0'), *c_arg, *new_str)))
+			return (exit_cvt_str_ft(c_arg));
+	return (1);
+}
+
+char			*convert_string(va_list args, t_flags_state **to_do)
 {
 	char			*new_str;
-	char			*current_arg;
+	char			*c_arg;
 	t_flags_state	*temp;
 
 	temp = *to_do;
 	new_str = NULL;
-	if (!(current_arg = get_arguments(temp->type, args, *to_do)))
+	if (!(c_arg = get_arguments(temp->type, args, temp)))
 		return (NULL);
-	struct_edit(&temp, current_arg);
-	if (temp->dot_star != -2 && temp->type != '%' && temp->type != 'c'
-			&& temp->type != 'p')
-		new_str = dot_format(temp->dot_star, current_arg, new_str, temp);
-	if (temp->space_left)
-		new_str = add_char(temp->space_left, current_arg, new_str, 0, ' ');
-	if (temp->space_right)
-		new_str = add_char(temp->space_right, current_arg, new_str, 1, ' ');
-	if (temp->zero_left)
-		new_str = add_char(temp->zero_left, current_arg, new_str, 0,
-				((temp->type != 's' && is_dot_applicable(temp->type)
-				&& temp->dot_star != -2)) ? ' ' : '0');
+	if (!(convert_string_format(&c_arg, &new_str, temp)))
+		return (exit_cvt_str(&c_arg));
 	if (temp->first_digit_to_zero)
 		new_str = NULL;
 	if (new_str == NULL)
-		new_str = ft_strdup(current_arg);
-	free(current_arg);
+		if (!(new_str = ft_strdup(c_arg)))
+			return (exit_cvt_str(&c_arg));
+	free(c_arg);
+	temp->length += ft_strlen(new_str);
 	return (new_str);
 }

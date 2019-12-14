@@ -4,7 +4,8 @@ LIBFT		=	libft
 
 SRCS		=	main.c misc.c string_edition.c \
 				flags/digit.c flags/dot_star.c \
-				flags/minus.c flags/zero.c
+				flags/minus.c flags/zero.c exit.c \
+				edited_ft_libft.c
 
 OBJS		=	$(SRCS:.c=.o)
 
@@ -26,9 +27,11 @@ $(NAME): $(OBJS)
 
 clean:
 		$(RM) $(OBJS)
+		make clean -C $(LIBFT)
 
 fclean: clean
 		$(RM) $(NAME)
+		make fclean -C $(LIBFT)
 
 re: fclean all
 

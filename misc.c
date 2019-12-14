@@ -6,7 +6,7 @@
 /*   By: bboisset <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/12 14:49:17 by bboisset          #+#    #+#             */
-/*   Updated: 2019/12/12 16:41:05 by bboisset         ###   ########.fr       */
+/*   Updated: 2019/12/14 02:29:16 by bboisset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 t_flags_state	*init_to_do(void)
 {
-	t_flags_state *new;
+	t_flags_state	*new;
 
 	if (!(new = (t_flags_state*)malloc(sizeof(t_flags_state))))
 		return (NULL);
@@ -24,36 +24,35 @@ t_flags_state	*init_to_do(void)
 	new->zero_left = 0;
 	new->first_digit_to_zero = 0;
 	new->dot_star = -2;
-	new->addional_length = 0;
+	new->length = 0;
 	new->type = '0';
 	return (new);
 }
 
-char			*handle_ft_strdup(char *str)
+t_str_edition	init_str_edition(int space_to_add, int orientation, int charset)
 {
-	if (!str)
-		str = "(null)";
-	return (ft_strdup(str));
+	t_str_edition	edit_str;
+
+	edit_str.space_add = space_to_add;
+	edit_str.orientation = orientation;
+	edit_str.charset = charset;
+	return (edit_str);
 }
 
-int				ft_edit_atoi(const char *str, int start)
+int				is_end_of_arg(char c)
 {
-	int i;
-	int number;
+	return ((c == 'c' || c == 's' || c == 'p' || c == 'd' || c == 'i'
+				|| c == 'u' || c == 'x' || c == 'X' || c == '%') ? 1 : 0);
+}
 
-	i = start;
-	number = 0;
-	if (str[0] == '\0')
-		return (0);
-	while (!ft_isdigit(str[i]))
+int				assign_type(char c, t_flags_state *to_do)
+{
+	if (is_end_of_arg(c))
 	{
-		i++;
-		if (str[i] == '\0')
-			return (-1);
+		to_do->type = c;
+		return (0);
 	}
-	while (ft_isdigit(str[i]) && str[i] != '\0')
-		number = number * 10 + (str[i++] - '0');
-	return (number);
+	return (-1);
 }
 
 char			*num_to_hex(uint64_t num)

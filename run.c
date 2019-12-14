@@ -1,9 +1,19 @@
-//#include "printf.h"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   run.c                                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: bboisset <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/12/13 23:59:35 by bboisset          #+#    #+#             */
+/*   Updated: 2019/12/14 00:01:03 by bboisset         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "printf.h"
 
-int main(void){// d|i|u => -1
-    int res =  printf("test %-12i et %--2.4s %24s !\n", 0, NULL, "coco");
-    int res2 = ft_printf("test %-12i et %--2.4s %24s !\n", 0, NULL, "coco");
-    printf("\n%i|%i\n", res, res2);
-    return (0);
+int	main(void){
+	printf("test %-12i et %--2.4s %24s !\n", 0, NULL, "coco");
+	ft_printf("test %-12i et %--2.4s %24s !\n", 0, NULL, "coco");
+	return (0);
 }
