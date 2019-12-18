@@ -6,7 +6,7 @@
 /*   By: bboisset <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/12 14:53:36 by bboisset          #+#    #+#             */
-/*   Updated: 2019/12/14 02:28:32 by bboisset         ###   ########.fr       */
+/*   Updated: 2019/12/16 14:12:24 by bboisset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ typedef struct		s_flags_state
 	int				zero_left;
 	int				space_left;
 	int				space_right;
-	int				first_digit_to_zero;
+	int				end_of_line;
 	int				dot_star;
 	int				length;
 	char			type;
@@ -38,7 +38,7 @@ typedef struct		s_str_edition
 }					t_str_edition;
 
 int					ft_edit_atoi(const char *str, int start);
-void				edit_ft_putstr(char *str, int str_len);
+void				edit_ft_putstr(char *str, int str_len, int end_of_line);
 t_flags_state		*init_to_do(void);
 t_str_edition		init_str_edition(int space_to_add,
 		int orientation, int charset);
@@ -53,6 +53,7 @@ int					assign_type(char c, t_flags_state *to_do);
 int					get_type_by_letter(char c);
 int					ft_printf(const char *format, ...);
 int					is_end_of_arg(char c);
+char				*char_case(va_list args, t_flags_state *to_do);
 
 int					zero_pattern(char *str, int pos, t_flags_state *to_do,
 		va_list arg);

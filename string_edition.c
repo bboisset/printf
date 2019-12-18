@@ -6,7 +6,7 @@
 /*   By: bboisset <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/12 16:28:31 by bboisset          #+#    #+#             */
-/*   Updated: 2019/12/14 02:30:50 by bboisset         ###   ########.fr       */
+/*   Updated: 2019/12/18 13:41:53 by bboisset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,17 +35,12 @@ static char		*get_arguments_pointer(char type, va_list args)
 char			*get_arguments(char type, va_list args, t_flags_state *to_do)
 {
 	char	*res;
-	char	temp;
 
 	res = NULL;
 	if (type == 'u')
-		res = ft_itoa_uint64_t(va_arg(args, uint64_t));
+		res = ft_itoa_uint64_t(va_arg(args, unsigned int));
 	else if (type == 'c')
-	{
-		if ((temp = va_arg(args, uintmax_t)) == '\0')
-			to_do->length += 1;
-		res = ft_char_to_string(temp);
-	}
+		res = char_case(args, to_do);
 	else if (type == 's')
 		res = handle_ft_strdup(va_arg(args, char*));
 	else if (type == 'p' || type == 'x' || type == 'X')
@@ -66,12 +61,12 @@ static void		struct_edit(t_flags_state **to_do, char *current_arg)
 	t_flags_state	*temp;
 
 	temp = *to_do;
-	temp->space_left = (temp->type == 'c' && current_arg[0] == 0)
-		? temp->space_left - 1 : temp->space_left;
-	temp->space_right = (temp->type == 'c' && current_arg[0] == '\0')
-		? temp->space_right - 1 : temp->space_right;
-	temp->zero_left = (temp->type == 'c' && current_arg[0] == '\0')
-		? temp->zero_left - 1 : temp->zero_left;
+	temp->space_left = (temp->type == 'c' && current_arg[0] == 0 &&
+			temp->space_left) ? temp->space_left - 1 : temp->space_left;
+	temp->space_right = (temp->type == 'c' && current_arg[0] == '\0' &&
+			temp->space_right) ? temp->space_right - 1 : temp->space_right;
+	temp->zero_left = (temp->type == 'c' && current_arg[0] == '\0' &&
+			temp->zero_left) ? temp->zero_left - 1 : temp->zero_left;
 }
 
 int				convert_string_format(char **c_arg, char **new_str,
@@ -92,8 +87,8 @@ int				convert_string_format(char **c_arg, char **new_str,
 			return (exit_cvt_str_ft(c_arg));
 	if (temp->zero_left)
 		if (!(*new_str = add_char(init_str_edition(temp->zero_left, 0,
-		((temp->type != 's' && is_dot_applicable(temp->type) &&
-		temp->dot_star != -2)) ? ' ' : '0'), *c_arg, *new_str)))
+				((temp->type != 's' && is_dot_applicable(temp->type) &&
+				temp->dot_star != -2)) ? ' ' : '0'), *c_arg, *new_str)))
 			return (exit_cvt_str_ft(c_arg));
 	return (1);
 }
@@ -110,8 +105,6 @@ char			*convert_string(va_list args, t_flags_state **to_do)
 		return (NULL);
 	if (!(convert_string_format(&c_arg, &new_str, temp)))
 		return (exit_cvt_str(&c_arg));
-	if (temp->first_digit_to_zero)
-		new_str = NULL;
 	if (new_str == NULL)
 		if (!(new_str = ft_strdup(c_arg)))
 			return (exit_cvt_str(&c_arg));

@@ -6,7 +6,7 @@
 /*   By: bboisset <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/14 14:45:42 by bboisset          #+#    #+#             */
-/*   Updated: 2019/12/12 16:18:28 by bboisset         ###   ########.fr       */
+/*   Updated: 2019/12/16 09:47:44 by bboisset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,7 @@ void				ft_putnbr_fd(int n, int fd);
 void				ft_putstr(const char *str);
 
 int					ft_number_length(int nb);
+int					ft_number_length_uint64_t(uint64_t nb);
 
 t_list				*ft_lstnew(void *content);
 void				ft_lstadd_back(t_list **alst, t_list *new);

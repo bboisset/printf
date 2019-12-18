@@ -6,7 +6,7 @@
 /*   By: bboisset <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/12/12 15:02:19 by bboisset          #+#    #+#             */
-/*   Updated: 2019/12/14 02:17:48 by bboisset         ###   ########.fr       */
+/*   Updated: 2019/12/16 12:27:03 by bboisset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,8 @@ int			dot_pattern(char *str, int pos, t_flags_state *to_do, va_list arg)
 	if (str[i] == '*')
 	{
 		temp = va_arg(arg, int);
-		temp = (temp < 0) ? temp * -1 : temp;
-		to_do->dot_star = temp;
+		if (temp >= 0)
+			to_do->dot_star = temp;
 		return (i + 1);
 	}
 	to_do->dot_star = ft_edit_atoi(str, i - 1);
@@ -41,9 +41,10 @@ static void	dot_exception(char *str, int str_len, int *count,
 		t_flags_state *to_do)
 {
 	*count = (ft_atoi(str) < 1 && to_do->type != 's' && to_do->type != 'x' &&
-			to_do->type != 'X' && str_len < *count) ? *count + 1 : *count;
+			to_do->type != 'X' && str_len <= *count) ? *count + 1 : *count;
 	*count = (to_do->type != 's' && to_do->type != 'x' && to_do->type != 'X' &&
-			ft_strncmp(str, "0", str_len) == 0) ? *count - 1 : *count;
+			ft_strncmp(str, "0", str_len) == 0 &&
+			*count != 1) ? *count - 1 : *count;
 	*count = (*count == -1 && to_do->type == 's') ? 0 : *count;
 }
 

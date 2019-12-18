@@ -6,7 +6,7 @@
 /*   By: bboisset <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/11 15:27:31 by bboisset          #+#    #+#             */
-/*   Updated: 2019/12/12 16:09:59 by bboisset         ###   ########.fr       */
+/*   Updated: 2019/12/16 09:47:08 by bboisset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ char		*ft_itoa(int n)
 	return (str);
 }
 
-static int	ft_number_length_uint64_t(uint64_t nb)
+int			ft_number_length_uint64_t(uint64_t nb)
 {
 	int	length;
 

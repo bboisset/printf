@@ -6,7 +6,7 @@
 /*   By: bboisset <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/26 14:59:59 by bboisset          #+#    #+#             */
-/*   Updated: 2019/12/12 16:41:51 by bboisset         ###   ########.fr       */
+/*   Updated: 2019/12/16 09:31:10 by bboisset         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,10 @@ int	zero_pattern(char *str, int pos, t_flags_state *to_do, va_list arg)
 	if (str[i] == '*')
 	{
 		temp = va_arg(arg, int);
-		temp = (temp < 0) ? temp * -1 : temp;
-		to_do->zero_left = temp;
+		if (temp > 0)
+			to_do->zero_left = temp;
+		else
+			to_do->space_right = temp * -1;
 		return (i + 1);
 	}
 	to_do->zero_left = ft_edit_atoi(str, i - 1);

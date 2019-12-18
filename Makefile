@@ -2,7 +2,7 @@ NAME		= 	libftprintf.a
 
 LIBFT		=	libft
 
-SRCS		=	main.c misc.c string_edition.c \
+SRCS		=	ft_printf.c misc.c string_edition.c \
 				flags/digit.c flags/dot_star.c \
 				flags/minus.c flags/zero.c exit.c \
 				edited_ft_libft.c
